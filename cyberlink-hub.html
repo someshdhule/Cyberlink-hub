@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberLink Hub</title>
+  <style>
+    body {
+      background-color: #111827;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #22d3ee;
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    h3 {
+      color: #f472b6;
+      font-size: 1.3rem;
+      margin: 30px 0 15px;
+      border-bottom: 1px solid #f472b6;
+      padding-bottom: 5px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background-color: #1f2937;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+    .card:hover {
+      background-color: #374151;
+    }
+    .card h2 {
+      color: #22d3ee;
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+    .card p {
+      color: #9ca3af;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>CyberLink Hub 🔗</h1>
+  <input type="text" id="searchInput" placeholder="Search tools..." />
+  <div id="toolContainer"></div>
+
+  <script>
+    const categories = [
+      {
+        title: "Phishing Attack Techniques",
+        tools: [
+          { title: "Bitly - URL Shortener", url: "https://bitly.com", description: "Shorten and manage links easily." },
+          { title: "Unshorten.it", url: "https://unshorten.it", description: "Expand shortened URLs and inspect metadata." },
+          { title: "Homoglyph Attack Generator - IronGeek", url: "https://www.irongeek.com/homoglyph-attack-generator.php", description: "Generate homoglyph phishing domains." },
+          { title: "DNSTwist GitHub", url: "https://github.com/elceef/dnstwist", description: "Domain permutation engine for detecting phishing & typo-squatting." },
+          { title: "DNSTwist Online Tool", url: "https://dnstwist.it/", description: "Web version of DNSTwist for fast domain checks." },
+          { title: "DNSTwister Report", url: "https://dnstwister.report/", description: "Detect phishing domains and DNS records changes." },
+          { title: "PhishTank", url: "https://phishtank.org/", description: "Free community site for identifying phishing websites." },
+          { title: "URLHaus", url: "https://urlhaus.abuse.ch/", description: "Malicious URL tracking by abuse.ch." },
+          { title: "Google Safe Browsing", url: "https://transparencyreport.google.com/safe-browsing/search", description: "Check site safety status with Google." },
+        ]
+      },
+      {
+        title: "Email Header and Sender Analysis",
+        tools: [
+          { title: "Email Header Viewer (Sublime Plugin)", url: "https://packagecontrol.io/packages/Email%20Header", description: "Email header viewer plugin for Sublime Text." },
+          { title: "Email Header Analyzer - 13Cubed", url: "https://github.com/13Cubed/EmailHeader", description: "Tool for analyzing email headers efficiently." },
+          { title: "IANA Email Headers List", url: "https://www.iana.org/assignments/message-headers/message-headers.xhtml", description: "Official registry of message headers." },
+          { title: "Microsoft MHA Web Tool", url: "https://mha.azurewebsites.net/", description: "Email header analysis tool by Microsoft." },
+          { title: "Microsoft MHA GitHub", url: "https://github.com/microsoft/MHA", description: "Open-source Microsoft Header Analyzer." },
+          { title: "MXToolbox Email Header Analyzer", url: "https://mxtoolbox.com/EmailHeaders.aspx", description: "Check and trace email headers." },
+          { title: "Email IOC Extractor - MalwareCube", url: "https://github.com/MalwareCube/Email-IOC-Extractor", description: "Extract indicators of compromise from email content." },
+        ]
+      },
+      {
+        title: "Malware Analysis and URL Inspection",
+        tools: [
+          { title: "URL2PNG", url: "https://www.url2png.com/", description: "Screenshot a website from a URL." },
+          { title: "urlscan.io", url: "https://urlscan.io/", description: "Scan and analyze websites for malicious behavior." },
+          { title: "VirusTotal", url: "https://www.virustotal.com/gui/home/upload", description: "Analyze suspicious files and URLs." },
+          { title: "URLVoid", url: "https://www.urlvoid.com/", description: "Website reputation checker." },
+          { title: "Joe Sandbox", url: "https://www.joesandbox.com/", description: "Advanced malware analysis sandbox." },
+          { title: "ANY.RUN Sandbox", url: "https://app.any.run", description: "Interactive malware analysis sandbox." },
+          { title: "Hybrid Analysis", url: "https://hybrid-analysis.com/", description: "Free malware analysis service." },
+        ]
+      },
+      {
+        title: "File & Document Analysis Tools",
+        tools: [
+          { title: "emldump.py - Didier Stevens", url: "https://github.com/DidierStevens/DidierStevensSuite/blob/master/emldump.py", description: "Analyze email files and extract contents." },
+          { title: "oledump.py - Didier Stevens", url: "https://github.com/DidierStevens/DidierStevensSuite/blob/master/oledump.py", description: "Analyze OLE files (like Word/Excel)." },
+          { title: "pdf-parser.py - Didier Stevens", url: "https://github.com/DidierStevens/DidierStevensSuite/blob/master/pdf-parser.py", description: "PDF file analysis tool." },
+          { title: "pdfid.py - Didier Stevens", url: "https://github.com/DidierStevens/DidierStevensSuite/blob/master/pdfid.py", description: "Check for malicious elements in PDF files." },
+        ]
+      },
+      {
+        title: "Email Investigation & Threat Intel",
+        tools: [
+          { title: "Microsoft Message Trace (EAC)", url: "https://learn.microsoft.com/en-us/exchange/monitoring/trace-an-email-message/message-trace-modern-eac", description: "Trace email delivery in Microsoft Exchange." },
+          { title: "Microsoft eDiscovery Content Search", url: "https://learn.microsoft.com/en-us/purview/ediscovery-content-search-overview", description: "Search content for compliance and investigation." },
+          { title: "Talos Intelligence", url: "https://talosintelligence.com/", description: "Threat intelligence, IP/domain reputation by Cisco." },
+          { title: "CyberChef - GCHQ", url: "https://gchq.github.io/CyberChef/", description: "Data analysis and decoding Swiss army knife." },
+          { title: "Google Blog: CVE-2017-0199 Analysis", url: "https://cloud.google.com/blog/topics/threat-intelligence/cve-2017-0199-hta-handler", description: "Deep-dive on Office CVE-2017-0199 exploit." },
+          { title: "Medium: CVE-2017-0199 Explained", url: "https://medium.com/@asmcybersecurity/diving-deeper-into-the-microsoft-office-cve-2017-0199-vulnerability-11bd3e725ab7", description: "Detailed vulnerability analysis blog." },
+        ]
+      },
+    ];
+
+    function renderTools(filterText = '') {
+      const container = document.getElementById('toolContainer');
+      container.innerHTML = '';
+
+      categories.forEach(category => {
+        const matched = category.tools.filter(tool => tool.title.toLowerCase().includes(filterText.toLowerCase()));
+        if (matched.length > 0) {
+          const title = document.createElement('h3');
+          title.textContent = category.title;
+          container.appendChild(title);
+
+          const grid = document.createElement('div');
+          grid.className = 'grid';
+
+          matched.forEach(tool => {
+            const a = document.createElement('a');
+            a.href = tool.url;
+            a.target = '_blank';
+            a.className = 'card';
+            a.innerHTML = `<h2>${tool.title}</h2><p>${tool.description}</p>`;
+            grid.appendChild(a);
+          });
+
+          container.appendChild(grid);
+        }
+      });
+    }
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      renderTools(e.target.value);
+    });
+
+    // Initial render
+    renderTools();
+  </script>
+</body>
+</html>
